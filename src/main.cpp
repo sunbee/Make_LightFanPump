@@ -22,6 +22,34 @@ void setup() {
 
 }
 
+void render() {
+  FastLED.show();
+}
+
+void setPixel(int index, byte Red, byte Green, byte Blue) {
+  leds[index].red = Red;
+  leds[index].green = Green;
+  leds[index].blue = Blue;
+
+}
+
+void setStrip(byte Red, byte Green, byte Blue) {
+  for (int i=0; i < NUMBER_OF_LEDS; i++) {
+    setPixel(i, Red, Green, Blue);
+  }
+  render();
+}
+
+void cycleRGB() {
+  setStrip(CRGB::Red, 0, 0);
+  delay(600);
+  setStrip(0, CRGB::Green, 0);
+  delay(600);
+  setStrip(0, 0, CRGB::Blue);
+  delay(600);
+}
+
 void loop() {
   // put your main code here, to run repeatedly:
+  cycleRGB();
 }
