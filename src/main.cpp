@@ -5,9 +5,9 @@
 /*
   Define product specs and configure GPIO for control.
 */
-#define PIN_SWITCH 4            # Relay
-#define PIN_DATA 5              # Control
-#define TYPE_OF_LED WS2812b     # Neopixel WS2812b
+#define PIN_SWITCH 4            
+#define PIN_DATA 5              
+#define TYPE_OF_LED WS2812B     
 #define NUMBER_OF_LEDS 120            
 #define ORDER_OF_COLORS RGB
 #define BRIGHTNESS 127
@@ -41,15 +41,55 @@ void setStrip(byte Red, byte Green, byte Blue) {
 }
 
 void cycleRGB() {
-  setStrip(CRGB::Red, 0, 0);
+  setStrip(0xff, 0x00, 0x00);
   delay(600);
-  setStrip(0, CRGB::Green, 0);
+  setStrip(0x00, 0xff, 0x00);
   delay(600);
-  setStrip(0, 0, CRGB::Blue);
+  setStrip(0x00, 0x00, 0xff);
   delay(600);
+}
+
+void cycleRGB_fade() {
+  for (int iteration=0; iteration<3; iteration++) {
+    /*
+    Fade in
+    */
+    for (int fill=0; fill<255; fill++) {
+      switch(iteration) {
+        case 0:
+          setStrip(fill, 0x00, 0x00);
+          break;
+        case 1:
+          setStrip(0x00, fill, 0x00);
+          break;
+        case 2:
+          setStrip(0x00, 0x00, fill);
+          break;
+      }
+      delay(3);
+    } // end for: fill
+    /*
+    Fade Out
+    */ 
+    for (int fill=0; fill<255; fill++) {
+      switch(iteration) {
+        case 0:
+          setStrip(fill, 0x00, 0x00);
+          break;
+        case 1:
+          setStrip(0x00, fill, 0x00);
+          break;
+        case 2:
+          setStrip(0x00, 0x00, fill);
+          break;
+      }
+      delay(3);
+    } // end for: fill
+  } // end for: iteration
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  cycleRGB();
+  // cycleRGB();
+  cycleRGB_fade();
 }
