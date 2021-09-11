@@ -10,8 +10,8 @@
 #define TYPE_OF_LED WS2812B     
 #define NUMBER_OF_LEDS 120            
 #define ORDER_OF_COLORS RGB
-#define BRIGHTNESS 127
 #define FRAMES_PER_SECOND 120
+byte BRIGHTNESS=55;
 
 CRGB leds[NUMBER_OF_LEDS];
 
@@ -19,7 +19,7 @@ void setup() {
   // put your setup code here, to run once:
   delay(3000);
   FastLED.addLeds<TYPE_OF_LED, PIN_DATA, ORDER_OF_COLORS>(leds, NUMBER_OF_LEDS);
-
+  FastLED.setBrightness(BRIGHTNESS);
 }
 
 void render() {
@@ -71,7 +71,7 @@ void cycleRGB_fade() {
     /*
     Fade Out
     */ 
-    for (int fill=0; fill<255; fill++) {
+    for (int fill=255; fill>=0; fill--) {
       switch(iteration) {
         case 0:
           setStrip(fill, 0x00, 0x00);
@@ -91,5 +91,6 @@ void cycleRGB_fade() {
 void loop() {
   // put your main code here, to run repeatedly:
   // cycleRGB();
+  FastLED.setBrightness(BRIGHTNESS);
   cycleRGB_fade();
 }
