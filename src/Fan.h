@@ -1,13 +1,18 @@
 #ifndef FAN_H
 #define FAN_H
 
-class FAN
+#include <Arduino.h>
+
+class Fan
 {
     public:
-        void switch(bool=false);
-        void instruct();
+        Fan(int pinSwitch, int pinData);
+        void switch_on();
+        void switch_off();
+        void instruct(byte speed);
     private:
         int PIN_SWITCH;
         int PIN_DATA;
-}
+};
+
 #endif
