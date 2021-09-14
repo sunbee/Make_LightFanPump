@@ -11,13 +11,17 @@
 #define NUMBER_OF_LEDS 120            
 #define ORDER_OF_COLORS RGB
 #define FRAMES_PER_SECOND 120
-byte BRIGHTNESS=55;   # 0 - 255 
+byte BRIGHTNESS=55;   // 0 - 255 
 
 CRGB leds[NUMBER_OF_LEDS];
 
 void setup() {
   // put your setup code here, to run once:
-  delay(3000);
+  Serial.begin(9600);
+  delay(3399);
+  pinMode(PIN_SWITCH, OUTPUT);
+  digitalWrite(PIN_SWITCH, LOW);
+
   FastLED.addLeds<TYPE_OF_LED, PIN_DATA, ORDER_OF_COLORS>(leds, NUMBER_OF_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
 }
@@ -88,9 +92,32 @@ void cycleRGB_fade() {
   } // end for: iteration
 }
 
+void timed_cycle(int cycle_count=5) {
+  unsigned long tic = millis();
+  unsigned long toc = tic;
+  unsigned long DELTA = 3636;
+  int iter=0;
+  bool ON = true;
+
+  delay(6363);
+  while(iter < cycle_count) {
+    toc = millis();
+    if (toc - tic < DELTA) {
+      digitalWrite(PIN_SWITCH, ON);
+      cycleRGB_fade();
+    } else {
+      tic = toc;
+      ON = !ON;
+      iter++;
+    }
+  }
+
+}
+
 void loop() {
   // put your main code here, to run repeatedly:
   // cycleRGB();
   FastLED.setBrightness(BRIGHTNESS);
-  cycleRGB_fade();
+  // cycleRGB_fade();
+  timed_cycle();
 }
