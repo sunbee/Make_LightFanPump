@@ -11,7 +11,7 @@
 #define NUMBER_OF_LEDS 120            
 #define ORDER_OF_COLORS RGB
 #define FRAMES_PER_SECOND 120
-byte BRIGHTNESS=55;
+byte BRIGHTNESS=55;   # 0 - 255 
 
 CRGB leds[NUMBER_OF_LEDS];
 
