@@ -9,7 +9,7 @@ LED::LED() {
 
     // Configure pins for on/off switch
     pinMode(this->PIN_SWITCH , OUTPUT);
-    digitalWrite(this->PIN_SWITCH , LOW);
+    digitalWrite(this->PIN_SWITCH , HIGH); // Enabled on LOW
     
     // Configure pins for speed control
     pinMode(this->PIN_DATA, OUTPUT);
@@ -40,6 +40,21 @@ void LED::setStrip(byte red, byte green, byte blue) {
   this->render();
 }
 
+void LED::switch_on() {
+  /*
+  Switch on the LED strip in white.
+  */
+  digitalWrite(this->PIN_SWITCH, LOW);
+  this->setStrip(0xff, 0xff, 0xff);
+}
+
+void LED::switch_off() {
+  /*
+  Switch off the LED strip by powering down.
+  */
+  digitalWrite(this->PIN_SWITCH, HIGH);
+}
+
 void LED::cycleRGB() {
   /* 
   Cycle through primary colors without fade.
@@ -47,12 +62,16 @@ void LED::cycleRGB() {
   Will block the program until the procedure
   has completed cycling through the colors.
   */
+  digitalWrite(this->PIN_SWITCH , LOW);
+
   this->setStrip(0xff, 0x00, 0x00);
   delay(600);
   this->setStrip(0x00, 0xff, 0x00);
   delay(600);
   this->setStrip(0x00, 0x00, 0xff);
   delay(600);
+  
+  digitalWrite(this->PIN_SWITCH , HIGH);
 }
 
 void LED::cycleRGB_fade() {
@@ -62,6 +81,8 @@ void LED::cycleRGB_fade() {
   it will block the program for a full execution cycle.
   Use with caution!!!
   */
+  digitalWrite(this->PIN_SWITCH , LOW);  // Relay ON
+
   for (int iteration=0; iteration<3; iteration++) {
     /*
     Fade in
@@ -98,5 +119,7 @@ void LED::cycleRGB_fade() {
       delay(3);
     } // end for: fill
   } // end for: iteration
+
+  digitalWrite(this->PIN_SWITCH , HIGH); // Relay OFF
 }
 

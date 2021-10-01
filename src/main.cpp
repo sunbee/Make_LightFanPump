@@ -16,4 +16,9 @@ void loop() {
   // cycleRGB();
   Light.set_brightness(55);
   Light.cycleRGB_fade();
+  Serial.println("Finished cycling.");
+  Light.switch_on();
+  delay(3000);
+  Light.switch_off();
+  delay(1000);
 }
