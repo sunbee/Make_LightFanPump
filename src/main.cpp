@@ -15,10 +15,14 @@ void loop() {
   // put your main code here, to run repeatedly:
   // cycleRGB();
   Light.set_brightness(55);
+  Serial.print("Started cycling colors .. ");
   Light.cycleRGB_fade();
-  Serial.println("Finished cycling.");
+  Serial.print("Complete! \nStarting white light .. ");
   Light.switch_on();
   delay(3000);
+  Serial.print("Complete! \nPowering down  .. ");
   Light.switch_off();
   delay(1000);
+  Serial.print("Complete! \nResume normal operation.");
+  Serial.println();
 }
