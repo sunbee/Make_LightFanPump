@@ -16,7 +16,7 @@
 class LED
 {
     public:
-        LED(int pinSwitch, int pinData);
+        LED();
         void switch_on();
         void switch_off();
         void set_brightness(byte brightness);
@@ -26,7 +26,6 @@ class LED
         void setStrip(byte red, byte green, byte blue);
         void cycleRGB();
         void cycleRGB_fade();
-        void timed_cycle(int cycle_count=5);
     private:
         CRGB leds[NUMBER_OF_LEDS];
         int PIN_SWITCH;

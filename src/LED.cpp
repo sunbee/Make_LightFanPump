@@ -3,17 +3,17 @@
 */
 #include "LED.h"
 
-LED::LED(int pinSwitch, int pinData) {
-    this->PIN_SWITCH = pinSwitch;
-    this->PIN_DATA = pinData;
+LED::LED() {
+    this->PIN_SWITCH = LED_PIN_SWITCH;
+    this->PIN_DATA = LED_PIN_DATA; 
 
     // Configure pins for on/off switch
-    pinMode(pinSwitch, OUTPUT);
-    digitalWrite(pinSwitch, LOW);
+    pinMode(this->PIN_SWITCH , OUTPUT);
+    digitalWrite(this->PIN_SWITCH , LOW);
     
     // Configure pins for speed control
-    pinMode(pinData, OUTPUT);
-    analogWrite(pinData, 0);
+    pinMode(this->PIN_DATA, OUTPUT);
+    analogWrite(this->PIN_DATA, 0);
     //
     FastLED.addLeds<TYPE_OF_LED, LED_PIN_DATA, ORDER_OF_COLORS>(this->leds, NUMBER_OF_LEDS);
     FastLED.setBrightness(this->BRIGHTNESS);
@@ -41,6 +41,12 @@ void LED::setStrip(byte red, byte green, byte blue) {
 }
 
 void LED::cycleRGB() {
+  /* 
+  Cycle through primary colors without fade.
+  Transitions between colors are abrupt. 
+  Will block the program until the procedure
+  has completed cycling through the colors.
+  */
   this->setStrip(0xff, 0x00, 0x00);
   delay(600);
   this->setStrip(0x00, 0xff, 0x00);
@@ -50,6 +56,12 @@ void LED::cycleRGB() {
 }
 
 void LED::cycleRGB_fade() {
+  /*
+  Cycle through primary colors with smooth transition.
+  Not that this is a blocking procedure, meaning that
+  it will block the program for a full execution cycle.
+  Use with caution!!!
+  */
   for (int iteration=0; iteration<3; iteration++) {
     /*
     Fade in
@@ -88,24 +100,3 @@ void LED::cycleRGB_fade() {
   } // end for: iteration
 }
 
-void LED::timed_cycle(int cycle_count=5) {
-  unsigned long tic = millis();
-  unsigned long toc = tic;
-  unsigned long DELTA = 3636;
-  int iter=0;
-  bool ON = true;
-
-  delay(6363);
-  while(iter < cycle_count) {
-    toc = millis();
-    if (toc - tic < DELTA) {
-      digitalWrite(PIN_SWITCH, ON);
-      this->cycleRGB_fade();
-    } else {
-      tic = toc;
-      ON = !ON;
-      iter++;
-    }
-  }
-
-}

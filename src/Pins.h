@@ -1,2 +1,2 @@
-#define LED_PIN_SWITCH 4            
-#define LED_PIN_DATA 5 
+#define LED_PIN_SWITCH 7            
+#define LED_PIN_DATA 6 
