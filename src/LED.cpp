@@ -55,7 +55,7 @@ void LED::switch_off() {
   digitalWrite(this->PIN_SWITCH, HIGH);
 }
 
-void LED::cycleRGB() {
+void LED::cycle() {
   /* 
   Cycle through primary colors without fade.
   Transitions between colors are abrupt. 
@@ -74,7 +74,7 @@ void LED::cycleRGB() {
   digitalWrite(this->PIN_SWITCH , HIGH);
 }
 
-void LED::cycleRGB_fade() {
+void LED::cycle_fade() {
   /*
   Cycle through primary colors with smooth transition.
   Not that this is a blocking procedure, meaning that
@@ -123,3 +123,47 @@ void LED::cycleRGB_fade() {
   digitalWrite(this->PIN_SWITCH , HIGH); // Relay OFF
 }
 
+void LED::instruct(bool state, byte intensity) {
+  /*
+  Handle instruction set from the MQTT broker,
+  conveyed via nodemcu over UART. Customize 
+  to needs of the project, reusing the generic methods
+  of the LED class.
+  */
+  if (!state) { // switch off
+    this->switch_off();
+    return;
+  }
+  this->set_brightness(intensity);
+  cycle_fade();
+}
+
+void LED::test_me() {
+  unsigned long tic = millis();
+  unsigned long toc = tic;
+  unsigned long delta_one = 3000;
+  unsigned long delta_two = 6000;
+
+  Serial.println("Testing .. switched on.");
+  while (true) {
+    if ((toc - tic) < delta_one) {
+      this->switch_on();
+    } else {
+      tic = toc;
+      this->switch_off();
+      break;
+    }
+  }
+  Serial.println("Complete!");
+  Serial.println("Testing .. RGB cycling.");
+  while (true) {
+    if ((toc - tic) < delta_two) {
+      this->cycle_fade();
+    } else {
+      tic = toc;
+      this->switch_off();
+      break;
+    }
+    Serial.println("Complete!");
+  }
+}
