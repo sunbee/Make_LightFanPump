@@ -135,7 +135,7 @@ void LED::instruct(bool state, byte intensity) {
     return;
   }
   this->set_brightness(intensity);
-  cycle_fade();
+  this->cycle_fade();
 }
 
 void LED::test_me() {

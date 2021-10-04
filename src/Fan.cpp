@@ -3,27 +3,51 @@
 */
 #include "Fan.h"
 
-Fan::Fan(int pinSwitch, int pinData) {
-    this->PIN_SWITCH = pinSwitch;
-    this->PIN_DATA = pinData;
+Fan::Fan() {
+    this->PIN_SWITCH = FAN_PIN_SWITCH;
+    this->PIN_DATA = FAN_PIN_DATA;
 
     // Configure pins for on/off switch
-    pinMode(pinSwitch, OUTPUT);
-    digitalWrite(pinSwitch, LOW);
+    pinMode(this->PIN_SWITCH, OUTPUT);
+    digitalWrite(this->PIN_SWITCH, HIGH);
     
     // Configure pins for speed control
-    pinMode(pinData, OUTPUT);
-    analogWrite(pinData, 0);
+    pinMode(this->PIN_DATA, OUTPUT);
+    analogWrite(this->PIN_DATA, 0);
+};
+
+void Fan::set_speed(byte speed) {
+    this->speed = speed;
+}
+
+byte Fan::get_speed() {
+    /*
+    Report speed setting. Get RPM Using 'get_RPM'.
+    */
+   return this->speed;
+}
+
+int Fan::get_RPM() {
+
 };
 
 void Fan::switch_on() {
-    digitalWrite(this->PIN_SWITCH, true);
+    /*
+    Switch the fan on at max speed.
+    */
+    digitalWrite(this->PIN_SWITCH, LOW);
+    analogWrite(this->PIN_DATA, 255);
 }
 
 void Fan::switch_off() {
-    digitalWrite(this->PIN_SWITCH, false);
+    digitalWrite(this->PIN_SWITCH, HIGH);
 }
 
-void Fan::instruct(byte speed) {
+void Fan::instruct(bool state, byte speed) {
+    if (!state) {
+        this->switch_off();
+        return;
+    }
+    digitalWrite(this->PIN_SWITCH, LOW);
     analogWrite(this->PIN_DATA, speed);
 }
