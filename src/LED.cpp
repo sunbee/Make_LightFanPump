@@ -38,14 +38,17 @@ void LED::setStrip(byte red, byte green, byte blue) {
     this->setPixel(i, red, green, blue);
   }
   this->render();
+  this->state = true;
 }
 
 void LED::switch_on() {
   /*
   Switch on the LED strip in white.
   */
-  digitalWrite(this->PIN_SWITCH, LOW);
   this->setStrip(0xff, 0xff, 0xff);
+  this->state = true;
+  digitalWrite(this->PIN_SWITCH, LOW);
+  this->state = true;
 }
 
 void LED::switch_off() {
@@ -53,6 +56,7 @@ void LED::switch_off() {
   Switch off the LED strip by powering down.
   */
   digitalWrite(this->PIN_SWITCH, HIGH);
+  this->state = false;
 }
 
 void LED::cycle() {
@@ -63,6 +67,7 @@ void LED::cycle() {
   has completed cycling through the colors.
   */
   digitalWrite(this->PIN_SWITCH , LOW);
+  this->state = true;
 
   this->setStrip(0xff, 0x00, 0x00);
   delay(600);
@@ -71,31 +76,32 @@ void LED::cycle() {
   this->setStrip(0x00, 0x00, 0xff);
   delay(600);
   
-  digitalWrite(this->PIN_SWITCH , HIGH);
+  this->switch_off();
 }
 
 void LED::cycle_fade() {
   /*
   Cycle through primary colors with smooth transition.
   Not that this is a blocking procedure, meaning that
-  it will block the program for a full execution cycle.
+  it will block the program while running.
   Use with caution!!!
   */
   digitalWrite(this->PIN_SWITCH , LOW);  // Relay ON
+  this->state = true;
 
-  for (int iteration=0; iteration<3; iteration++) {
+  for (int iteration=0; iteration<3; iteration++) { // Colors: RGB
     /*
     Fade in
     */
-    for (int fill=0; fill<255; fill++) {
+    for (int fill=0; fill<255; fill++) { // Brighten up the current color
       switch(iteration) {
-        case 0:
+        case 0: // Red
           this->setStrip(fill, 0x00, 0x00);
           break;
-        case 1:
+        case 1: // Green
           this->setStrip(0x00, fill, 0x00);
           break;
-        case 2:
+        case 2: // Blue
           this->setStrip(0x00, 0x00, fill);
           break;
       }
@@ -104,15 +110,15 @@ void LED::cycle_fade() {
     /*
     Fade Out
     */ 
-    for (int fill=255; fill>=0; fill--) {
+    for (int fill=255; fill>=0; fill--) { // Fade out the current color
       switch(iteration) {
-        case 0:
+        case 0: // Red
           this->setStrip(fill, 0x00, 0x00);
           break;
-        case 1:
+        case 1: // Green
           this->setStrip(0x00, fill, 0x00);
           break;
-        case 2:
+        case 2: // Blue
           this->setStrip(0x00, 0x00, fill);
           break;
       }
@@ -120,7 +126,7 @@ void LED::cycle_fade() {
     } // end for: fill
   } // end for: iteration
 
-  digitalWrite(this->PIN_SWITCH , HIGH); // Relay OFF
+  this->switch_off(); // Relay OFF
 }
 
 void LED::instruct(bool state, byte intensity) {
@@ -139,6 +145,11 @@ void LED::instruct(bool state, byte intensity) {
 }
 
 void LED::test_me() {
+  /*
+  Switcn on in white color for a time interval (delta_one),
+  followed by cycling through colors with fade effect
+  for the next time interval (delta_two).
+  */
   unsigned long tic = millis();
   unsigned long toc = tic;
   unsigned long delta_one = 3000;

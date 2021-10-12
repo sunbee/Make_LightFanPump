@@ -33,6 +33,7 @@ class LED
         int PIN_SWITCH;
         int PIN_DATA;
         byte BRIGHTNESS=127;
+        bool state;
 };
 
 #endif
