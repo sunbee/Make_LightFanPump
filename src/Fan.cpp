@@ -72,3 +72,58 @@ int Fan::get_RPM(bool liveReading) {
     this->RPM = (counter * delta * 60 / 2000);
     return this->RPM;
 };
+
+void Fan::test_me() {
+    unsigned long tic = millis();
+    unsigned long toc = tic;
+    unsigned long delta = 6000;
+    
+    Serial.println("Fan testing .. powered up!");
+    this->power_up();
+    Serial.print("Running fan at full speed . ");
+    while (true) {
+        if ((toc - tic) < 1000) {
+            Serial.print(". ");
+        } 
+        if ((toc - tic) < delta) {
+            this->instruct(true, 255);
+        } else {
+            tic = toc;
+            break;
+        }    
+    }
+    Serial.println("Done!");
+    Serial.print("Observed HI speed: ");
+    Serial.println(this->get_RPM(true));
+    
+    Serial.print("Running fan at medium speed . ");
+    while (true) {
+        if ((toc - tic) < 1000) {
+            Serial.print(". ");
+        } 
+        if ((toc - tic) < delta) {
+            this->instruct(true, 155);
+        } else {
+            tic = toc;
+            break;
+        }      
+    }
+    Serial.println("Done!"); 
+
+    Serial.print("Running fan at low speed . ");
+    while (true) {
+        if ((toc - tic) < 1000) {
+            Serial.print(". ");
+        } 
+        if ((toc - tic) < delta) {
+            this->instruct(true, 0);
+        } else {
+            tic = toc;
+            break;
+        }      
+    }
+    Serial.println("Done!"); 
+    this->power_down();
+    Serial.println("Fan testing complete .. powered down!");
+
+}

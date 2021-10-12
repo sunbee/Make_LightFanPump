@@ -164,7 +164,7 @@ void LED::test_me() {
   unsigned long delta_two = 6000;
   unsigned long delta_three = 6000;
 
-  Serial.println("Testing .. powered up.");
+  Serial.println("LED testing .. powered up.");
   this->power_up();
   Serial.print("Playing white . ");
   while (true) {
@@ -191,8 +191,8 @@ void LED::test_me() {
       tic = toc;
       break;
     }
-    Serial.println("Done!");
   }
+  Serial.println("Done!");
 
   Serial.print("Playing RGB cycle at full brightness . ");
   while (true)
@@ -209,5 +209,5 @@ void LED::test_me() {
   }
   Serial.println("Done!"); 
   this->power_down();
-  Serial.println("Testing complete.. powered down.");
+  Serial.println("LED testing complete.. powered down.");
 }

@@ -14,6 +14,7 @@ class Fan
         void set_speed(byte speed);
         byte get_speed();
         int get_RPM(bool=true);
+        void test_me();
     private:
         int PIN_SWITCH;
         int PIN_DATA;
