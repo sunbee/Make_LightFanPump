@@ -20,35 +20,50 @@ LED::LED() {
 };
 
 void LED::render() {
+  /*
+  Show colors.
+  Helper function, use only inside a wrapper.
+  */
   FastLED.show();
 }
 
 void LED::set_brightness(byte brightness) {
-    this->BRIGHTNESS = brightness;
-    FastLED.setBrightness(this->BRIGHTNESS);
+  /*
+  Set the strip's brightness.
+  Helper function, use only inside a wrapper.
+  */
+  this->BRIGHTNESS = brightness;
+  FastLED.setBrightness(this->BRIGHTNESS);
 }
 void LED::setPixel(int index, byte red, byte green, byte blue) {
+  /*
+  Set a pixel's color.
+  Helper function, use only inside a wrapper.
+  */
   leds[index].red = red;
   leds[index].green = green;
   leds[index].blue = blue;
 }
 
 void LED::setStrip(byte red, byte green, byte blue) {
+  /*
+  Render strip in the specified color.
+  Helper function, use only inside a wrapper.
+  Does not check to see that the strip is powered on. 
+  */
   for (int i=0; i < NUMBER_OF_LEDS; i++) {
     this->setPixel(i, red, green, blue);
   }
-  this->render();
-  this->state = true;
+  this->render(); 
 }
 
 void LED::switch_on() {
   /*
   Switch on the LED strip in white.
   */
-  this->setStrip(0xff, 0xff, 0xff);
-  this->state = true;
   digitalWrite(this->PIN_SWITCH, LOW);
   this->state = true;
+  this->setStrip(0xff, 0xff, 0xff);
 }
 
 void LED::switch_off() {

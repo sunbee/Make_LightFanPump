@@ -18,6 +18,7 @@ class Fan
         int PIN_SWITCH;
         int PIN_DATA;
         byte speed=127;
+        bool state;
 };
 
 #endif
