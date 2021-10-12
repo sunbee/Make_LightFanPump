@@ -3,6 +3,11 @@
 */
 #include "Fan.h"
 
+int counter = 0;
+void count() {
+    counter++;
+}
+
 Fan::Fan() {
     this->PIN_SWITCH = FAN_PIN_SWITCH;
     this->PIN_DATA = FAN_PIN_DATA;
@@ -16,8 +21,22 @@ Fan::Fan() {
     analogWrite(this->PIN_DATA, 0);
 };
 
+void Fan::power_up() {
+    /*
+    Switch the fan on at max speed.
+    */
+    digitalWrite(this->PIN_SWITCH, LOW);
+    this->state = true;
+}
+
+void Fan::power_down() {
+    digitalWrite(this->PIN_SWITCH, HIGH);
+    this->state = false;
+}
+
 void Fan::set_speed(byte speed) {
     this->speed = speed;
+    analogWrite(this->PIN_DATA, speed);
 }
 
 byte Fan::get_speed() {
@@ -27,27 +46,29 @@ byte Fan::get_speed() {
    return this->speed;
 }
 
-int Fan::get_RPM() {
-
-};
-
-void Fan::switch_on() {
-    /*
-    Switch the fan on at max speed.
-    */
-    digitalWrite(this->PIN_SWITCH, LOW);
-    analogWrite(this->PIN_DATA, 255);
-}
-
-void Fan::switch_off() {
-    digitalWrite(this->PIN_SWITCH, HIGH);
-}
-
 void Fan::instruct(bool state, byte speed) {
     if (!state) {
-        this->switch_off();
+        this->power_down();
         return;
     }
-    digitalWrite(this->PIN_SWITCH, LOW);
-    analogWrite(this->PIN_DATA, speed);
+    this->set_speed(speed);
 }
+
+int Fan::get_RPM(bool liveReading) {
+    if (!liveReading) {
+        return this->RPM;
+    }
+    attachInterrupt(digitalPinToInterrupt(FAN_PIN_TACHY), count, RISING);
+    unsigned long tic = millis();
+    unsigned long toc = tic;
+    unsigned long delta = 6000;
+    while (true) {
+        toc = millis();
+        if ((toc - tic) > delta) {
+            break;
+        }
+    }
+    detachInterrupt(digitalPinToInterrupt(FAN_PIN_TACHY));
+    this->RPM = (counter * delta * 60 / 2000);
+    return this->RPM;
+};

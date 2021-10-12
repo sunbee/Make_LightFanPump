@@ -8,16 +8,17 @@ class Fan
 {
     public:
         Fan();
-        void switch_on();
-        void switch_off();
-        void instruct(bool state, byte speed);
+        void power_up();
+        void power_down();
+        void instruct(bool state, byte speed=155);
         void set_speed(byte speed);
         byte get_speed();
-        int get_RPM();
+        int get_RPM(bool=true);
     private:
         int PIN_SWITCH;
         int PIN_DATA;
-        byte speed=127;
+        byte speed=155;
+        int RPM;
         bool state;
 };
 

@@ -17,17 +17,18 @@ class LED
 {
     public:
         LED();
-        void switch_on();
-        void switch_off();
-        void instruct(bool state, byte intensity);
+        void power_up();
+        void power_down();
+        void instruct(bool state, byte intensity=127);
         void test_me();
         void set_brightness(byte brightness);
         int get_brightness();
         void render();
         void setPixel(int index, byte red, byte green, byte blue);
         void setStrip(byte red, byte green, byte blue);
-        void cycle();
-        void cycle_fade();
+        void play_white();
+        void play_cycle();
+        void play_cycle_fade();
     private:
         CRGB leds[NUMBER_OF_LEDS];
         int PIN_SWITCH;

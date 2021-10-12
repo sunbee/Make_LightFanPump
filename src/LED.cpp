@@ -57,53 +57,48 @@ void LED::setStrip(byte red, byte green, byte blue) {
   this->render(); 
 }
 
-void LED::switch_on() {
+void LED::power_up() {
   /*
-  Switch on the LED strip in white.
+  Power up LED strip.
   */
   digitalWrite(this->PIN_SWITCH, LOW);
   this->state = true;
-  this->setStrip(0xff, 0xff, 0xff);
 }
 
-void LED::switch_off() {
+void LED::power_down() {
   /*
-  Switch off the LED strip by powering down.
+  Power down the LED strip.
   */
   digitalWrite(this->PIN_SWITCH, HIGH);
   this->state = false;
 }
 
-void LED::cycle() {
+void LED::play_white() {
+    this->setStrip(0xff, 0xff, 0xff);
+}
+
+void LED::play_cycle() {
   /* 
   Cycle through primary colors without fade.
   Transitions between colors are abrupt. 
   Will block the program until the procedure
   has completed cycling through the colors.
   */
-  digitalWrite(this->PIN_SWITCH , LOW);
-  this->state = true;
-
   this->setStrip(0xff, 0x00, 0x00);
   delay(600);
   this->setStrip(0x00, 0xff, 0x00);
   delay(600);
   this->setStrip(0x00, 0x00, 0xff);
   delay(600);
-  
-  this->switch_off();
 }
 
-void LED::cycle_fade() {
+void LED::play_cycle_fade() {
   /*
   Cycle through primary colors with smooth transition.
   Not that this is a blocking procedure, meaning that
   it will block the program while running.
   Use with caution!!!
   */
-  digitalWrite(this->PIN_SWITCH , LOW);  // Relay ON
-  this->state = true;
-
   for (int iteration=0; iteration<3; iteration++) { // Colors: RGB
     /*
     Fade in
@@ -140,8 +135,6 @@ void LED::cycle_fade() {
       delay(3);
     } // end for: fill
   } // end for: iteration
-
-  this->switch_off(); // Relay OFF
 }
 
 void LED::instruct(bool state, byte intensity) {
@@ -152,11 +145,11 @@ void LED::instruct(bool state, byte intensity) {
   of the LED class.
   */
   if (!state) { // switch off
-    this->switch_off();
+    this->power_down();
     return;
   }
   this->set_brightness(intensity);
-  this->cycle_fade();
+  this->play_cycle_fade();
 }
 
 void LED::test_me() {
@@ -169,27 +162,52 @@ void LED::test_me() {
   unsigned long toc = tic;
   unsigned long delta_one = 3000;
   unsigned long delta_two = 6000;
+  unsigned long delta_three = 6000;
 
-  Serial.println("Testing .. switched on.");
+  Serial.println("Testing .. powered up.");
+  this->power_up();
+  Serial.print("Playing white . ");
   while (true) {
+    if ((toc - tic) < 1000) {
+      Serial.print(". ");
+    }
     if ((toc - tic) < delta_one) {
-      this->switch_on();
+      this->play_white();
     } else {
       tic = toc;
-      this->switch_off();
       break;
     }
   }
-  Serial.println("Complete!");
-  Serial.println("Testing .. RGB cycling.");
+  Serial.println("Done!");
+
+  Serial.print("Playing RGB cycle . ");
   while (true) {
+    if ((toc - tic) < 1000) {
+      Serial.print(". ");
+    }
     if ((toc - tic) < delta_two) {
-      this->cycle_fade();
+      this->play_cycle_fade();
     } else {
       tic = toc;
-      this->switch_off();
       break;
     }
-    Serial.println("Complete!");
+    Serial.println("Done!");
   }
+
+  Serial.print("Playing RGB cycle at full brightness . ");
+  while (true)
+  {
+    if ((toc-tic) < 1000) {
+      Serial.print(". ");
+    }
+    if ((toc-tic) < delta_three) {
+      this->instruct(true, 255);
+    } else {
+      tic = toc;
+      break;
+    }
+  }
+  Serial.println("Done!"); 
+  this->power_down();
+  Serial.println("Testing complete.. powered down.");
 }
