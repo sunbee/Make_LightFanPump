@@ -56,21 +56,25 @@ void Fan::instruct(bool state, byte speed) {
 }
 
 int Fan::get_RPM(bool liveReading) {
+    float speed;
     if (!liveReading) {
         return this->RPM;
     }
-    attachInterrupt(digitalPinToInterrupt(FAN_PIN_TACHY), count, RISING);
+    attachInterrupt(digitalPinToInterrupt(this->PIN_TACHY), count, RISING);
     unsigned long tic = millis();
     unsigned long toc = tic;
     unsigned long delta = 6000;
+    
     while (true) {
         toc = millis();
         if ((toc - tic) > delta) {
+            detachInterrupt(digitalPinToInterrupt(this->PIN_TACHY));
+            counter = 0;
+            speed = counter * 2000 * 60 / delta; // no. pulses * (2 pulses / sec) * (60 sec / min)
+            this->RPM = (int)speed;
             break;
         }
     }
-    detachInterrupt(digitalPinToInterrupt(FAN_PIN_TACHY));
-    this->RPM = (counter * delta * 60 / 2000);
     return this->RPM;
 };
 
@@ -97,8 +101,6 @@ void Fan::test_me() {
         }    
     }
     Serial.println("Done!");
-    Serial.print("Observed HI speed: ");
-    Serial.println(this->get_RPM(true));
     
     Serial.print("Running fan at medium speed . ");
     jot = millis();
@@ -126,7 +128,7 @@ void Fan::test_me() {
             Serial.print(". ");
         } 
         if ((toc - tic) < delta) {
-            this->instruct(true, 0);
+            this->instruct(true, 0); // Still runs
         } else {
             tic = toc;
             break;
