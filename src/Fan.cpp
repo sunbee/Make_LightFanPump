@@ -11,6 +11,7 @@ void count() {
 Fan::Fan() {
     this->PIN_SWITCH = FAN_PIN_SWITCH;
     this->PIN_DATA = FAN_PIN_DATA;
+    this->PIN_TACHY = FAN_PIN_TACHY;
 
     // Configure pins for on/off switch
     pinMode(this->PIN_SWITCH, OUTPUT);

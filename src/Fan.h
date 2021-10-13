@@ -18,6 +18,7 @@ class Fan
     private:
         int PIN_SWITCH;
         int PIN_DATA;
+        int PIN_TACHY;
         byte speed=155;
         int RPM;
         bool state;
