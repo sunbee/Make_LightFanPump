@@ -160,6 +160,7 @@ void LED::test_me() {
   */
   unsigned long tic = millis();
   unsigned long toc = tic;
+  unsigned long jot = tic;
   unsigned long delta_one = 3000;
   unsigned long delta_two = 6000;
   unsigned long delta_three = 6000;
@@ -168,7 +169,9 @@ void LED::test_me() {
   this->power_up();
   Serial.print("Playing white . ");
   while (true) {
-    if ((toc - tic) < 1000) {
+    toc = millis();
+    if ((toc - jot) > 1000) {
+      jot = toc;
       Serial.print(". ");
     }
     if ((toc - tic) < delta_one) {
@@ -182,9 +185,7 @@ void LED::test_me() {
 
   Serial.print("Playing RGB cycle . ");
   while (true) {
-    if ((toc - tic) < 1000) {
-      Serial.print(". ");
-    }
+    toc = millis();
     if ((toc - tic) < delta_two) {
       this->play_cycle_fade();
     } else {
@@ -195,11 +196,8 @@ void LED::test_me() {
   Serial.println("Done!");
 
   Serial.print("Playing RGB cycle at full brightness . ");
-  while (true)
-  {
-    if ((toc-tic) < 1000) {
-      Serial.print(". ");
-    }
+  while (true) {
+    toc = millis();
     if ((toc-tic) < delta_three) {
       this->instruct(true, 255);
     } else {
@@ -209,5 +207,5 @@ void LED::test_me() {
   }
   Serial.println("Done!"); 
   this->power_down();
-  Serial.println("LED testing complete.. powered down.");
+  Serial.println("LED testing complete .. powered down.");
 }
